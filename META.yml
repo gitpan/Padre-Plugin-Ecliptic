@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-Ecliptic
-version: 0.01
+version: 0.02
 author:
   - Ahmad M. Zawawi
 abstract: Padre plugin for Eclipse-like features
@@ -10,6 +10,7 @@ resources:
   license: http://dev.perl.org/licenses/
   repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-Ecliptic/
 requires:
+  Class::XSAccessor: 1.02
   Padre: 0.33
 build_requires:
   Test::Exception: 0.27
@@ -19,7 +20,10 @@ build_requires:
 provides:
   Padre::Plugin::Ecliptic:
     file: lib/Padre/Plugin/Ecliptic.pm
-    version: 0.01
+    version: 0.02
+  Padre::Plugin::Ecliptic::ResourceDialog:
+    file: lib/Padre/Plugin/Ecliptic/ResourceDialog.pm
+    version: 0.02
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

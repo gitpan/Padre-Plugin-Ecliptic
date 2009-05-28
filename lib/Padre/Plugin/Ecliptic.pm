@@ -4,11 +4,13 @@ use strict;
 use warnings;
 
 # exports and version
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @EXPORT_OK = ();
 
 use Padre::Wx ();
+use Padre::Current ();
 use Padre::Util   ('_T');
+
 use base 'Padre::Plugin';
 
 # private subroutine to return the current share directory location
@@ -26,6 +28,7 @@ sub plugin_locale_directory {
 	return File::Spec->catdir( _sharedir(), 'locale' );
 }
 
+# This plugin is compatible with the following Padre plugin interfaces version
 sub padre_interfaces {
 	return 'Padre::Plugin' => 0.26,
 }
@@ -41,8 +44,6 @@ sub plugin_icon {
 
 # called when the plugin is enabled
 sub plugin_enable {
-	my $self = shift;
-
 	return 1;
 }
 
@@ -51,8 +52,18 @@ sub menu_plugins {
 	my $self        = shift;
 	my $main_window = shift;
 
-	# Create a simple menu with a single About entry
+	# Create a menu
 	$self->{menu} = Wx::Menu->new;
+
+	# Shows the "Open Resource" dialog
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Open Resource\tCTRL-Shift-R"), ),
+		sub { $self->_show_open_resource_dialog(); },
+	);
+
+	#---------
+	$self->{menu}->AppendSeparator;
 
 	# the famous about menu item...
 	Wx::Event::EVT_MENU(
@@ -65,6 +76,7 @@ sub menu_plugins {
 	return ( $self->plugin_name => $self->{menu} );
 }
 
+# Shows the infamous about dialog
 sub show_about {
 	my ($main) = @_;
 
@@ -78,6 +90,33 @@ sub show_about {
 	return;
 }
 
+# Opens the resource dialog
+sub _show_open_resource_dialog {
+	my $self = shift;
+	my $main = $self->main;
+
+	#Check if we have an open file so we can use its directory
+	my $filename = Padre::Current->filename;
+	if(not $filename) {
+		Wx::MessageBox(
+			_T("'Open Resource' Dialog only works on named documents"),
+			'Error',
+			Wx::wxOK,
+			$main,
+		);
+		
+		return;
+	}
+
+	my $dir = Padre::Util::get_project_dir($filename) || File::Basename::dirname($filename);
+	
+	#Create and show the dialog
+	require Padre::Plugin::Ecliptic::ResourceDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::ResourceDialog->new($self, directory => $dir);
+	$dialog->ShowModal();
+	
+}
+
 1;
 
 __END__
@@ -88,7 +127,26 @@ Padre::Plugin::Ecliptic - Padre plugin for Eclipse-like features
 
 =head1 SYNOPSIS
 
-After installation when you run Padre there should be a menu option Plugins/Ecliptic.
+	1. After installation, run Padre.
+	2. Make sure that it is enabled from 'Plugins\Plugin Manager".
+	3. Once enabled, there should be a menu option called Plugins/Ecliptic.
+
+=head1 DESCRIPTION
+
+Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
+
+=head2 'Open Resource' (Shortcut: CTRL-Shift-R)
+
+This opens a dialog that allows you to type a search for any file that exists on the same folder as the current Padre document. 
+You can use the ? to replace a single character or * to replace an entire string.
+
+=head2 'Quick Access for menu actions'
+
+Not implemented yet.
+
+=head2 'About'
+
+Shows a classic about box with this module's name and version.
 
 =head1 AUTHOR
 
