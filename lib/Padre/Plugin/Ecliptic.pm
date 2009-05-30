@@ -3,37 +3,49 @@ package Padre::Plugin::Ecliptic;
 use strict;
 use warnings;
 
-# exports and version
-our $VERSION = '0.03';
+# package exports and version
+our $VERSION = '0.04';
 our @EXPORT_OK = ();
 
+# module imports
 use Padre::Wx ();
 use Padre::Util   ('_T');
 
+# is a subclass of Padre::Plugin
 use base 'Padre::Plugin';
 
+#
 # private subroutine to return the current share directory location
+#
 sub _sharedir {
 	return Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),
 		'Ecliptic/share'));
 }
 
+#
 # Returns the plugin name to Padre
+#
 sub plugin_name {
 	return _T("Ecliptic");
 }
 
-# directory where to find the translations
+#
+# Directory where to find the translations
+#
 sub plugin_locale_directory {
 	return File::Spec->catdir( _sharedir(), 'locale' );
 }
 
+#
 # This plugin is compatible with the following Padre plugin interfaces version
+#
 sub padre_interfaces {
 	return 'Padre::Plugin' => 0.26,
 }
 
+#
 # plugin icon
+#
 sub plugin_icon {
     # find resource path
     my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'ecliptic.png');
@@ -42,12 +54,9 @@ sub plugin_icon {
     return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 }
 
-# called when the plugin is enabled
-sub plugin_enable {
-	return 1;
-}
-
+#
 # called when Padre needs the plugin's menu
+#
 sub menu_plugins {
 	my $self        = shift;
 	my $main_window = shift;
@@ -62,6 +71,13 @@ sub menu_plugins {
 		sub { $self->_show_open_resource_dialog(); },
 	);
 
+	# Shows the "Open Resource" dialog
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Quick Menu Access\tCTRL-3"), ),
+		sub { $self->_show_quick_menu_access_dialog(); },
+	);
+	
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -76,14 +92,16 @@ sub menu_plugins {
 	return ( $self->plugin_name => $self->{menu} );
 }
 
-# Shows the infamous about dialog
+#
+# Shows the nice about dialog
+#
 sub show_about {
 	my ($main) = @_;
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Ecliptic");
 	$about->SetDescription(
-		_T("Provides useful Eclipse-like to Padre.\n")
+		_T("Provides Eclipse-like useful features to Padre.\n")
 	);
 	$about->SetVersion($VERSION);
 	Wx::AboutBox( $about );
@@ -91,13 +109,29 @@ sub show_about {
 	return;
 }
 
-# Opens the resource dialog
+#
+# Opens the "Open Resource" dialog
+#
 sub _show_open_resource_dialog {
 	my $self = shift;
 
 	#Create and show the dialog
-	require Padre::Plugin::Ecliptic::ResourceDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::ResourceDialog->new($self);
+	require Padre::Plugin::Ecliptic::OpenResourceDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::OpenResourceDialog->new($self);
+	$dialog->ShowModal();
+
+	return;
+}
+
+#
+# Opens the "Quick Menu Access" dialog
+#
+sub _show_quick_menu_access_dialog {
+	my $self = shift;
+
+	#Create and show the dialog
+	require Padre::Plugin::Ecliptic::QuickMenuAccessDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::QuickMenuAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -109,7 +143,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse killer features
+Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful features
 
 =head1 SYNOPSIS
 
@@ -135,7 +169,8 @@ You can simply ignore CVS, .svn and .git folders using a simple checkbox
 
 =head2 'Quick Access for menu actions'
 
-Not implemented yet.
+This opens a dialog where you can search for menu labels. When you hit the OK 
+button, the menu item will be selected.
 
 =head2 'About'
 

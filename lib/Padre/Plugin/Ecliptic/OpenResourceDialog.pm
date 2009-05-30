@@ -1,8 +1,21 @@
-package Padre::Plugin::Ecliptic::ResourceDialog;
+package Padre::Plugin::Ecliptic::OpenResourceDialog;
 
 use warnings;
 use strict;
 
+# package exports and version
+our $VERSION = '0.04';
+our @EXPORT_OK = ();
+
+# module imports
+use Padre::Wx ();
+use Padre::Current ();
+use Padre::Util   ('_T');
+
+# is a subclass of Wx::Dialog
+use base 'Wx::Dialog';
+
+# accessors
 use Class::XSAccessor accessors => {
 	_sizer             => '_sizer',              # window sizer
 	_search_text       => '_search_text',	     # search text control
@@ -12,15 +25,6 @@ use Class::XSAccessor accessors => {
 	_directory         => '_directory',	         # searched directory
 	_matched_files     => '_matched_files',		 # matched files list
 };
-
-our $VERSION = '0.03';
-
-use Padre::Wx ();
-use Padre::Current ();
-use Padre::Util   ('_T');
-
-use base 'Wx::Dialog';
-
 
 # -- constructor
 sub new {
@@ -61,8 +65,6 @@ sub new {
 # -- event handler
 
 #
-# $self->_on_ok_button_clicked;
-#
 # handler called when the ok button has been clicked.
 # 
 sub _on_ok_button_clicked {
@@ -85,11 +87,7 @@ sub _on_ok_button_clicked {
 # -- private methods
 
 #
-# $self->_create;
-#
 # create the dialog itself.
-#
-# no params, no return values.
 #
 sub _create {
 	my ($self) = @_;
@@ -106,16 +104,15 @@ sub _create {
 	$self->SetSizerAndFit($sizer);
 	$sizer->SetSizeHints($self);
 
+	# center the dialog
+	$self->Centre;
+
 	# focus on the search text box
 	$self->_search_text->SetFocus();
 }
 
 #
-# $dialog->_create_buttons;
-#
 # create the buttons pane.
-#
-# no params. no return values.
 #
 sub _create_buttons {
 	my ($self) = @_;
@@ -127,11 +124,7 @@ sub _create_buttons {
 }
 
 #
-# $dialog->_create_controls;
-#
-# create the pane to choose the various configuration parameters.
-#
-# no params. no return values.
+# create controls in the dialog
 #
 sub _create_controls {
 	my ($self) = @_;
@@ -148,7 +141,7 @@ sub _create_controls {
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
 		_T('&Matching Items:') );
-	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [-1, -1], [], 
+	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
 		Wx::wxLB_EXTENDED ) );
 
 	# Shows how many items are selected and information about what is selected
@@ -157,7 +150,7 @@ sub _create_controls {
 	
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 5 );
+	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_ignore_dir_check, 0, Wx::wxALL|Wx::wxEXPAND, 5);
 	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_matches_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
@@ -169,7 +162,7 @@ sub _create_controls {
 }
 
 #
-#Adds various events
+# Adds various events
 #
 sub _setup_events {
 	my $self = shift;
@@ -219,7 +212,9 @@ sub _setup_events {
 	
 }
 
+#
 # Search for files and cache result
+#
 sub _search() {
 	my $self = shift;
 	
@@ -252,7 +247,9 @@ sub _search() {
 	return;
 }
 
+#
 # Update matches list box from matched files list
+#
 sub _update_matches_list_box() {
 	my $self = shift;
 	

@@ -1,9 +1,9 @@
 ---
 name: Padre-Plugin-Ecliptic
-version: 0.03
+version: 0.04
 author:
   - Ahmad M. Zawawi
-abstract: Padre plugin that provides Eclipse killer features
+abstract: Padre plugin that provides Eclipse-like useful features
 license: perl
 resources:
   homepage: http://padre.perlide.org/
@@ -20,10 +20,13 @@ build_requires:
 provides:
   Padre::Plugin::Ecliptic:
     file: lib/Padre/Plugin/Ecliptic.pm
-    version: 0.03
-  Padre::Plugin::Ecliptic::ResourceDialog:
-    file: lib/Padre/Plugin/Ecliptic/ResourceDialog.pm
-    version: 0.03
+    version: 0.04
+  Padre::Plugin::Ecliptic::OpenResourceDialog:
+    file: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm
+    version: 0.04
+  Padre::Plugin::Ecliptic::QuickMenuAccessDialog:
+    file: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm
+    version: 0.04
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
