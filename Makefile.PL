@@ -6,6 +6,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/Padre/Plugin/Ecliptic.pm',
           'PREREQ_PM' => {
                            'Class::XSAccessor' => '1.02',
+                           'ExtUtils::Install' => '1.52',
                            'Padre' => '0.33',
                            'Test::Exception' => '0.27',
                            'Test::More' => '0.86',

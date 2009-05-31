@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 our @EXPORT_OK = ();
 
 # module imports
@@ -171,10 +171,12 @@ sub _setup_events {
 	});
 	
 	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
-		my $self  = shift;
+
 		my $selection = $self->_matches_list->GetSelection;
-		$self->_status_text->SetLabel( 
-			$self->_matches_list->GetString($selection));
+		if($selection) {
+			$self->_status_text->SetLabel( 
+				$self->_matches_list->GetString($selection));
+		}
 		
 		return;
 	});

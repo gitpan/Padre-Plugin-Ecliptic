@@ -1,4 +1,4 @@
-package Padre::Plugin::Ecliptic::QuickOutlineAccessDialog;
+package Padre::Plugin::Ecliptic::QuickModuleAccessDialog;
 
 use warnings;
 use strict;
@@ -22,6 +22,7 @@ use Class::XSAccessor accessors => {
 	_search_text       => '_search_text',	     # search text control
 	_matches_list      => '_matches_list',	     # matches list
 	_status_text       => '_status_text',        # status label
+	_modules           => '_modules',            # modules list
 };
 
 # -- constructor
@@ -32,7 +33,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
 		-1,
-		_T('Quick Outline Access'),
+		_T('Quick Module Access'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -56,16 +57,27 @@ sub new {
 sub _on_ok_button_clicked {
 	my ($self) = @_;
 
-	my $main = $self->_plugin->main;
-
-	# Open the selected outline item if the user pressed OK
+	# Open the selected module in POD browser if the user pressed OK
 	my $selection = $self->_matches_list->GetSelection;
-	my $selected_outline_item = $self->_matches_list->GetClientData($selection);
-	if($selected_outline_item) {
-		$main->outline->SelectItem($selected_outline_item);
+	my $selected_module = $self->_matches_list->GetClientData($selection);
+	if($selected_module) {
+		Wx::Event::EVT_IDLE(
+			$self,
+			sub {
+				print "Show DocBrowser for '$selected_module'\n";
+				require Padre::Wx::DocBrowser;
+				my $help = Padre::Wx::DocBrowser->new;
+				$help->help( $selected_module );
+				$help->SetFocus;
+				$help->Show(1);
+				Wx::Event::EVT_IDLE($self, undef);
+			},
+		);
 	}
-	
+
 	$self->Destroy;
+	
+	return;
 }
 
 
@@ -116,12 +128,12 @@ sub _create_controls {
 
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
-		_T('&Type a Outline item name to access:') );
+		_T('&Type a module name to access:') );
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
-		_T('&Matching Outline Items:') );
+		_T('&Matching modules:') );
 	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
 		Wx::wxLB_SINGLE ) );
 
@@ -166,10 +178,12 @@ sub _setup_events {
 	});
 	
 	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
-		my $self  = shift;
+
 		my $selection = $self->_matches_list->GetSelection;
-		$self->_status_text->SetLabel( 
-			$self->_matches_list->GetString($selection));
+		if($selection) {
+			$self->_status_text->SetLabel( 
+				$self->_matches_list->GetString($selection));
+		}
 		
 		return;
 	});
@@ -181,7 +195,7 @@ sub _setup_events {
 #
 sub _update_matches_list_box {
 	my $self = shift;
-	
+
 	my $search_expr = $self->_search_text->GetValue;
 
 	#quote the search string to make it safer
@@ -191,41 +205,21 @@ sub _update_matches_list_box {
 	$self->_matches_list->Clear;
 	my $pos = 0;
 	
-	
-	my $main = $self->_plugin->main;
-	
-	# recursively walk tree control
-    sub walk_tree {
-		my $tree = shift;
-		my $root = shift;
-		my @items = ();
-		if($root && $root->IsOk) {
-			push @items, $root;
-			if ($tree->GetChildrenCount($root, 0)) {
-				my ($child, $cookie) = $tree->GetFirstChild($root);
-				while ($child && $child->IsOk) {
-					push @items, walk_tree($tree, $child);
-					($child, $cookie) = $tree->GetNextChild($root, $cookie);
-				}
-			}
-		}
-		
-		return @items;
+	unless($self->_modules) {
+		$self->_status_text->SetLabel( _T("Reading modules. Please wait...") );
+		require ExtUtils::Installed;
+		my @modules = ExtUtils::Installed->new()->modules();
+		$self->_modules( \@modules );
+		$self->_status_text->SetLabel( _T("Finished Searching") );
 	}
 	
-	my $outline_tree = $main->outline;
-	my @items = walk_tree($outline_tree, $outline_tree->GetRootItem());
-	
-	@items = sort { 
-		$outline_tree->GetItemText($a) cmp $outline_tree->GetItemText($b)
-	} @items;
-	foreach my $item (@items) {
-		my $item_label = $outline_tree->GetItemText($item);
-		if($item_label =~ /$search_expr/i) {
-			$self->_matches_list->Insert($item_label, $pos, $item);
+	foreach my $module (@{$self->_modules}) {
+		if($module =~ /$search_expr/i) {
+			$self->_matches_list->Insert($module, $pos, $module);
 			$pos++;
 		}
 	}
+
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
 		$self->_status_text->SetLabel("" . ($pos+1) . _T(' item(s) found'));
