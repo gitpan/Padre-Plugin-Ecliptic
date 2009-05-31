@@ -1,6 +1,14 @@
 Changes
 
+=head1 0.05  2009.5.31
+	- Implemented "Quick Outline Access" dialog.
+	- Added translations:
+		French (jquelin).
+		Brazilian Portuguese (garu).
+		Dutch (Dirk De Nijs).
+
 =head1 0.04  2009.5.30
+
 	- Implemented "Quick Menu Access" dialog.
 	- Standard minimum size and centering for all dialogs.
 	- Fixed a status message in "Open Resource" dialog.
