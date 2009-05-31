@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-Ecliptic
-version: 0.06
+version: 0.07
 author:
   - Ahmad M. Zawawi
 abstract: Padre plugin that provides Eclipse-like useful features
@@ -21,19 +21,19 @@ build_requires:
 provides:
   Padre::Plugin::Ecliptic:
     file: lib/Padre/Plugin/Ecliptic.pm
-    version: 0.06
+    version: 0.07
   Padre::Plugin::Ecliptic::OpenResourceDialog:
     file: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm
-    version: 0.06
+    version: 0.07
   Padre::Plugin::Ecliptic::QuickMenuAccessDialog:
     file: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm
-    version: 0.06
+    version: 0.07
   Padre::Plugin::Ecliptic::QuickModuleAccessDialog:
     file: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm
-    version: 0.06
+    version: 0.07
   Padre::Plugin::Ecliptic::QuickOutlineAccessDialog:
     file: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm
-    version: 0.06
+    version: 0.07
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

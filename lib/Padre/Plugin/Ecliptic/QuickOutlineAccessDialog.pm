@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 our @EXPORT_OK = ();
 
 # module imports
@@ -166,12 +166,19 @@ sub _setup_events {
 	});
 	
 	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
-		my $self  = shift;
+
 		my $selection = $self->_matches_list->GetSelection;
-		$self->_status_text->SetLabel( 
-			$self->_matches_list->GetString($selection));
+		if($selection != Wx::wxNOT_FOUND) {
+			$self->_status_text->SetLabel( 
+				$self->_matches_list->GetString($selection));
+		}
 		
 		return;
+	});
+
+	Wx::Event::EVT_LISTBOX_DCLICK( $self, $self->_matches_list, sub {
+		$self->_on_ok_button_clicked();
+		$self->EndModal(0);
 	});
 	
 }
@@ -200,7 +207,9 @@ sub _update_matches_list_box {
 		my $root = shift;
 		my @items = ();
 		if($root && $root->IsOk) {
-			push @items, $root;
+			if($root != $tree->GetRootItem()) {
+				push @items, $root;
+			}
 			if ($tree->GetChildrenCount($root, 0)) {
 				my ($child, $cookie) = $tree->GetFirstChild($root);
 				while ($child && $child->IsOk) {

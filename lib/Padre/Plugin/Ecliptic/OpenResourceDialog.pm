@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 our @EXPORT_OK = ();
 
 # module imports
@@ -204,12 +204,16 @@ sub _setup_events {
 				"" . scalar @matches . _T(" items selected"));
 		} elsif($num_selected == 1) {
 			$self->_status_text->SetLabel(
-				$self->_matches_list->GetString($matches[0]));
+				$self->_matches_list->GetClientData($matches[0]));
 		}
 		
 		return;
 	});
 	
+	Wx::Event::EVT_LISTBOX_DCLICK( $self, $self->_matches_list, sub {
+		$self->_on_ok_button_clicked();
+		$self->EndModal(0);
+	});
 }
 
 #
