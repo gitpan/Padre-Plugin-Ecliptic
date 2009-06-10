@@ -4,13 +4,11 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 our @EXPORT_OK = ();
 
 # module imports
 use Padre::Wx ();
-use Padre::Current ();
-use Padre::Util   ('_T');
 
 # is a subclass of Wx::Dialog
 use base 'Wx::Dialog';
@@ -28,9 +26,9 @@ sub new {
 
 	# create object
 	my $self = $class->SUPER::new(
-		Padre::Current->main,
+		$plugin->main,
 		-1,
-		_T('List Key Bindings'),
+		Wx::gettext('List Key Bindings'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,

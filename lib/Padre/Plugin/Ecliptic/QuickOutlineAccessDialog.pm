@@ -4,13 +4,11 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 our @EXPORT_OK = ();
 
 # module imports
 use Padre::Wx ();
-use Padre::Current ();
-use Padre::Util   ('_T');
 
 # is a subclass of Wx::Dialog
 use base 'Wx::Dialog';
@@ -30,9 +28,9 @@ sub new {
 
 	# create object
 	my $self = $class->SUPER::new(
-		Padre::Current->main,
+		$plugin->main,
 		-1,
-		_T('Quick Outline Access'),
+		Wx::gettext('Quick Outline Access'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -116,12 +114,12 @@ sub _create_controls {
 
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
-		_T('&Type a Outline item name to access:') );
+		Wx::gettext('&Type a Outline item name to access:') );
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
-		_T('&Matching Outline Items:') );
+		Wx::gettext('&Matching Outline Items:') );
 	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
 		Wx::wxLB_SINGLE ) );
 
@@ -237,9 +235,9 @@ sub _update_matches_list_box {
 	}
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
-		$self->_status_text->SetLabel("" . ($pos+1) . _T(' item(s) found'));
+		$self->_status_text->SetLabel("" . ($pos+1) . Wx::gettext(' item(s) found'));
 	} else {
-		$self->_status_text->SetLabel(_T('No items found'));
+		$self->_status_text->SetLabel(Wx::gettext('No items found'));
 	}
 			
 	return;

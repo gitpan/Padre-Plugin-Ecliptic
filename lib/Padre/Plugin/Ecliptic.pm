@@ -4,12 +4,11 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 our @EXPORT_OK = ();
 
 # module imports
 use Padre::Wx ();
-use Padre::Util   ('_T');
 
 # is a subclass of Padre::Plugin
 use base 'Padre::Plugin';
@@ -26,7 +25,7 @@ sub _sharedir {
 # Returns the plugin name to Padre
 #
 sub plugin_name {
-	return _T("Ecliptic");
+	return Wx::gettext("Ecliptic");
 }
 
 #
@@ -67,45 +66,52 @@ sub menu_plugins {
 	# Shows the "Open Resource" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("Open Resource\tCtrl-Shift-R"), ),
+		$self->{menu}->Append( -1, Wx::gettext("Open Resource\tCtrl-Shift-R"), ),
 		sub { $self->_show_open_resource_dialog(); },
 	);
 
 	# Shows the "List Key Bindings" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("List Key Bindings\tCtrl-Shift-L"), ),
+		$self->{menu}->Append( -1, Wx::gettext("List Key Bindings\tCtrl-Shift-L"), ),
 		sub { $self->_show_list_key_bindings_dialog(); },
 	);
 	
 	# Shows the "Quick Menu Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("Quick Menu Access\tCtrl-3"), ),
+		$self->{menu}->Append( -1, Wx::gettext("Quick Menu Access\tCtrl-3"), ),
 		sub { $self->_show_quick_menu_access_dialog(); },
 	);
 	
 	# Shows the "Quick Outline Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("Quick Outline Access\tCtrl-4"), ),
+		$self->{menu}->Append( -1, Wx::gettext("Quick Outline Access\tCtrl-4"), ),
 		sub { $self->_show_quick_outline_access_dialog(); },
 	);
 
 	# Shows the "Quick Module Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("Quick Module Access\tCtrl-5"), ),
+		$self->{menu}->Append( -1, Wx::gettext("Quick Module Access\tCtrl-5"), ),
 		sub { $self->_show_quick_module_access_dialog(); },
 	);
 
+	# "Open in Explorer" action
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, Wx::gettext("Open in Explorer\tCtrl-6"), ),
+		sub { $self->_open_in_explorer(); },
+	);
+	
 	#---------
 	$self->{menu}->AppendSeparator;
 
 	# the famous about menu item...
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("About"), ),
+		$self->{menu}->Append( -1, Wx::gettext("About"), ),
 		sub { $self->show_about },
 	);
 
@@ -122,7 +128,7 @@ sub show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Ecliptic");
 	$about->SetDescription(
-		_T("Provides Eclipse-like useful features to Padre.\n")
+		Wx::gettext("Provides Eclipse-like useful features to Padre.\n")
 	);
 	$about->SetVersion($VERSION);
 	Wx::AboutBox( $about );
@@ -200,6 +206,22 @@ sub _show_quick_module_access_dialog {
 	return;
 }
 
+#
+# For the current "saved" Padre document,
+# On win32, selects it in Windows Explorer
+# On linux, opens the containing folder for it
+#
+sub _open_in_explorer {
+	my $self = shift;
+
+	#Open the current document in file manager/explorer
+	use Padre::Plugin::Ecliptic::OpenInExplorerAction;
+	my $action = Padre::Plugin::Ecliptic::OpenInExplorerAction->new($self);
+	$action->open_in_explorer;
+	
+	return;
+}
+
 1;
 
 __END__
@@ -230,20 +252,31 @@ when you press the OK button.
 You can simply ignore CVS, .svn and .git folders using a simple checkbox 
 (enhancement over Eclipse).
 
-=head2 'Quick Menu Access' (Shortcut: Ctrl-3)
+=head2 List Key Bindings (Shortcut: Ctrl-Shift-L)
+
+This opens a dialog with a yellow list of current Padre actions/shortcuts. When you hit the OK 
+button, the selected Padre action will be performed.
+
+=head2 Quick Menu Access (Shortcut: Ctrl-3)
 
 This opens a dialog where you can search for menu labels. When you hit the OK 
 button, the menu item will be selected.
 
-=head2 'Quick Outline Access' (Shortcut: Ctrl-4)
+=head2 Quick Outline Access (Shortcut: Ctrl-4)
 
 This opens a dialog where you can search for outline tree. When you hit the OK 
 button, the outline element in the outline tree will be selected.
 
-=head2 'Quick Module Access' (Shortcut: Ctrl-5)
+=head2 Quick Module Access (Shortcut: Ctrl-5)
 
 This opens a dialog where you can search for a CPAN module. When you hit the OK 
 button, the selected module will be displayed in Padre's POD browser.
+
+=head2 Open in Explorer (Shortcut: Ctrl-6)
+
+For the current saved Padre document, open the platform's file manager and tries to select it if possible.
+On win32, opens the containing folder and selects the file in explorer. On *inux KDE/GNOME, 
+opens the containing folder for it.
 
 =head2 'About'
 
