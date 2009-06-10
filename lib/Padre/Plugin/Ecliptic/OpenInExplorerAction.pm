@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 our @EXPORT_OK = ();
 
 # module imports
@@ -29,12 +29,12 @@ sub new {
 # private method for executing a process without waiting
 #
 sub _execute {
-	my ($self, $exe_name, $cmd_args) = @_;
+	my ($self, $exe_name, @cmd_args) = @_;
 	my $result = undef;
 	my $cmd = File::Which::which($exe_name);
 	if(-e $cmd) {
 		require IPC::Open2;
-		my $pid = IPC::Open2::open2(0, 0, $cmd, $cmd_args);
+		my $pid = IPC::Open2::open2(\*R, \*W, $cmd, @cmd_args);
 	} else {
 		$result = Wx::gettext("Failed to execute process\n");
 	}
@@ -64,12 +64,13 @@ sub open_in_explorer {
 		$filename =~ s/\//\\/g;
 		$error = $self->_execute('explorer.exe', "/select,\"$filename\"");
 	} elsif($^O =~ /linux|bsd/i) {
-		if( defined $ENV{KDEDIR} ) {
+		my $parent_folder = File::Basename::dirname($filename);
+		if( defined $ENV{KDE_FULL_SESSION} ) {
 			# In KDE, execute: kfmclient exec $filename
-			$error = $self->_execute('kfmclient', "exec $filename");
+			$error = $self->_execute('kfmclient', "exec", $parent_folder);
 		} elsif( defined $ENV{GNOME_DESKTOP_SESSION_ID} ) {
 			# In Gnome, execute: nautilus --nodesktop --browser $filename
-			$error = $self->_execute('nautilus', "--nodesktop --browser $filename");
+			$error = $self->_execute('nautilus', "--no-desktop", "--browser", $parent_folder);
 		} else {
 			$error = "Could not find KDE or GNOME";
 		}
