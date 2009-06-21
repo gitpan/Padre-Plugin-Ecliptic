@@ -2,20 +2,20 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
+          'PL_FILES' => {},
+          'INSTALLDIRS' => 'site',
           'NAME' => 'Padre::Plugin::Ecliptic',
+          'EXE_FILES' => [],
           'VERSION_FROM' => 'lib/Padre/Plugin/Ecliptic.pm',
           'PREREQ_PM' => {
-                           'Class::XSAccessor' => '1.02',
-                           'ExtUtils::Install' => '1.52',
-                           'File::Which' => '0.05',
-                           'Padre' => '0.33',
                            'Test::Exception' => '0.27',
+                           'File::Which' => '0.05',
+                           'Test::NoWarnings' => '0.084',
+                           'ExtUtils::Install' => '1.52',
+                           'Padre' => '0.33',
+                           'Class::XSAccessor' => '1.02',
                            'Test::More' => '0.86',
-                           'Test::NeedsDisplay' => '1.05',
-                           'Test::NoWarnings' => '0.084'
-                         },
-          'INSTALLDIRS' => 'site',
-          'EXE_FILES' => [],
-          'PL_FILES' => {}
+                           'Test::NeedsDisplay' => '1.05'
+                         }
         )
 ;

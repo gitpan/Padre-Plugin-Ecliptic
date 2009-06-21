@@ -1,10 +1,10 @@
-package Padre::Plugin::Ecliptic::ListKeyBindingsDialog;
+package Padre::Plugin::Ecliptic::QuickAssistDialog;
 
 use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 our @EXPORT_OK = ();
 
 # module imports
@@ -28,7 +28,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		$plugin->main,
 		-1,
-		Wx::gettext('List Key Bindings'),
+		Wx::gettext('Quick Assist'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,

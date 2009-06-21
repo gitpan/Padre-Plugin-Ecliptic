@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 our @EXPORT_OK = ();
 
 # module imports
@@ -12,6 +12,7 @@ use Padre::Wx ();
 
 # is a subclass of Padre::Plugin
 use base 'Padre::Plugin';
+
 
 #
 # private subroutine to return the current share directory location
@@ -70,11 +71,11 @@ sub menu_plugins {
 		sub { $self->_show_open_resource_dialog(); },
 	);
 
-	# Shows the "List Key Bindings" dialog
+	# Shows the "Quick Assist" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("List Key Bindings\tCtrl-Shift-L"), ),
-		sub { $self->_show_list_key_bindings_dialog(); },
+		$self->{menu}->Append( -1, Wx::gettext("Quick Assist\tCtrl-Shift-L"), ),
+		sub { $self->_show_quick_assist_dialog(); },
 	);
 	
 	# Shows the "Quick Menu Access" dialog
@@ -105,6 +106,13 @@ sub menu_plugins {
 		sub { $self->_open_in_explorer(); },
 	);
 	
+	# Shows the "Quick Fix" dialog
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, Wx::gettext("Quick Fix\tCtrl-~"), ),
+		sub { $self->_show_quick_fix_dialog },
+	);
+	
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -112,7 +120,7 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main_window,
 		$self->{menu}->Append( -1, Wx::gettext("About"), ),
-		sub { $self->show_about },
+		sub { $self->_show_about },
 	);
 
 	# Return our plugin with its label
@@ -122,7 +130,7 @@ sub menu_plugins {
 #
 # Shows the nice about dialog
 #
-sub show_about {
+sub _show_about {
 	my ($main) = @_;
 
 	my $about = Wx::AboutDialogInfo->new;
@@ -151,14 +159,14 @@ sub _show_open_resource_dialog {
 }
 
 #
-# Opens the "List Key Bindings" dialog
+# Opens the "Quick Assist" dialog
 #
-sub _show_list_key_bindings_dialog {
+sub _show_quick_assist_dialog {
 	my $self = shift;
 
 	#Create and show the dialog
-	require Padre::Plugin::Ecliptic::ListKeyBindingsDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::ListKeyBindingsDialog->new($self);
+	require Padre::Plugin::Ecliptic::QuickAssistDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::QuickAssistDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -222,6 +230,20 @@ sub _open_in_explorer {
 	return;
 }
 
+#
+# Shows the quick fix dialog
+#
+sub _show_quick_fix_dialog {
+	my $self = shift;
+
+	#Create and show the dialog
+	require Padre::Plugin::Ecliptic::QuickFixDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::QuickFixDialog->new($self);
+	$dialog->Show(1);
+
+	return;
+}
+
 1;
 
 __END__
@@ -246,16 +268,16 @@ following options:
 This opens a nice dialog that allows you to find any file that exists 
 in the current document or working directory. You can use ? to replace 
 a single character or * to replace an entire string. The matched files list 
-are sorted alphabetically and you can select one or more files to be opened in Padre
-when you press the OK button.
+are sorted alphabetically and you can select one or more files to be opened in 
+Padre when you press the OK button.
 
 You can simply ignore CVS, .svn and .git folders using a simple checkbox 
 (enhancement over Eclipse).
 
-=head2 List Key Bindings (Shortcut: Ctrl-Shift-L)
+=head2 Quick Assist (Shortcut: Ctrl-Shift-L)
 
-This opens a dialog with a yellow list of current Padre actions/shortcuts. When you hit the OK 
-button, the selected Padre action will be performed.
+This opens a dialog with a yellow list of current Padre actions/shortcuts. When 
+you hit the OK button, the selected Padre action will be performed.
 
 =head2 Quick Menu Access (Shortcut: Ctrl-3)
 
@@ -274,9 +296,38 @@ button, the selected module will be displayed in Padre's POD browser.
 
 =head2 Open in Explorer (Shortcut: Ctrl-6)
 
-For the current saved Padre document, open the platform's file manager and tries to select it if possible.
-On win32, opens the containing folder and selects the file in explorer. On *inux KDE/GNOME, 
-opens the containing folder for it.
+For the current saved Padre document, open the platform's file manager and 
+tries to select it if possible. On win32, opens the containing folder and 
+selects the file in explorer. On *inux KDE/GNOME, opens the containing folder 
+for it.
+
+=head2 Quick Fix (Shortcut: Ctrl-~)
+
+This opens a yellow box that lists different actions that relate to 
+fixing the code at the cursor. It will call B<event_on_quick_fix> method 
+passing a L<Padre::Wx::Editor> object on the current Padre document. 
+Please see the following sample implementation:
+
+	sub event_on_quick_fix {
+		my ($self, $editor) = @_;
+		
+		my @items = ( 
+			{
+				text     => '123...', 
+				listener => sub { 
+					print "123...\n";
+				} 
+			},
+			{
+				text     => '456...', 
+				listener => sub { 
+					print "456...\n";
+				} 
+			},
+		);
+		
+		return @items;
+	}
 
 =head2 'About'
 
