@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 our @EXPORT_OK = ();
 
 # module imports
@@ -38,16 +38,15 @@ sub new {
 	
 	my $pt = $editor->ClientToScreen( 
 		$editor->PointFromPosition( $editor->GetCurrentPos ) );
-	#XXX- handle when the box goes outside the viewable area...
 
 	# create a simple dialog with no border
 	my $self = $class->SUPER::new(
 		$main,
 		-1,
 		Wx::gettext('Quick Fix'),
-		[$pt->x, $pt->y + 18],  # XXX- no hardcoding plz
+		[$pt->x, $pt->y + $editor->TextHeight(0)],
 		Wx::wxDefaultSize,
-		Wx::wxBORDER_NONE,
+		Wx::wxBORDER_SIMPLE,
 	);
 
 	$self->_plugin($plugin);
@@ -141,8 +140,16 @@ sub _create_list {
 	my $self = shift;
 
 	my $main = $self->_plugin->main;
-
-	my $list_width = 150;
+	my $current = $self->_plugin->current;
+	my $editor = $current->editor;
+	my $list_width = 280;
+	my $editor_font = $self->GetFont;
+	my $editor_font_size = $editor->TextHeight(0) - 10;
+	if($editor_font_size < 10) {
+		$editor_font_size = 10;
+	}
+	$editor_font->SetPointSize($editor_font_size);
+	$self->SetFont($editor_font);
 	$self->_list( 
 		Wx::ListView->new(
 			$self,
@@ -150,19 +157,17 @@ sub _create_list {
 			Wx::wxDefaultPosition,
 			[$list_width,100],
 			Wx::wxLC_REPORT | Wx::wxLC_NO_HEADER | Wx::wxLC_SINGLE_SEL | 
-			Wx::wxBORDER_SIMPLE
+			Wx::wxBORDER_NONE
 		)
 	);
  	
-	$self->_list->SetBackgroundColour(Wx::Colour->new(255,255,225));
 	$self->_list->InsertColumn( 0, '' );
 	$self->_list->SetColumnWidth( 0, $list_width - 5 );
 	
 	#try to  call event_on_quick_fix on the current document
 	my $item_count = 0;
 	my %listeners = ();
-	my $doc = $self->_plugin->current->document;
-	my $editor = $self->_plugin->current->editor;	
+	my $doc = $current->document;
 	if(defined $doc && $doc->can('event_on_quick_fix')) {
 		# add list items from callbacks
 		my @items = $doc->event_on_quick_fix($editor);
@@ -185,6 +190,9 @@ sub _create_list {
 		# display No suggestions...
 		$self->_list->InsertStringItem($item_count, Wx::gettext("No suggestions"));
 		$self->_list->Select(0, 1);
+		$listeners{0} = sub { 
+			# do nothing to exit the dialog when "No suggestion" is selected...
+		};
 	}
 
 	# focus on the list box
