@@ -9,6 +9,11 @@ lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm
 lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm
 lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm
 lib/Padre/Plugin/Ecliptic/share/icons/ecliptic.png
+lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-ar.po
+lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-fr-fr.po
+lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-nl-nl.po
+lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-pl.po
+lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-pt-br.po
 MANIFEST			This list of files
 README
 t/00-load.t

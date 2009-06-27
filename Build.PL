@@ -3,7 +3,15 @@ use warnings;
 use Module::Build;
 
 
-my $builder = Module::Build->new(
+my $class = Module::Build->subclass(code => <<'EOF');
+	use Locale::Msgfmt;
+	sub process_mo_files {
+		msgfmt({
+			in => "lib/Padre/Plugin/Ecliptic/share/locale/",
+			out => "blib/lib/Padre/Plugin/Ecliptic/share/locale/"});
+	}
+EOF
+my $builder = $class->new(
     module_name         => 'Padre::Plugin::Ecliptic',
     license             => 'perl',
     dist_author         => 'Ahmad M. Zawawi',
@@ -12,7 +20,7 @@ my $builder = Module::Build->new(
 		'Test::More'              => '0.86',
 		'Test::Exception'         => '0.27',
 		'Test::NoWarnings'        => '0.084',
-		'Test::NeedsDisplay'      => '1.05',
+		'Locale::Msgfmt'          => '0.08',
 	},
     requires => {
 		'Padre'                    => '0.33',
@@ -21,7 +29,7 @@ my $builder = Module::Build->new(
 		'File::Which'              => '0.05',
 	},
     add_to_cleanup      => [ 'Padre-Plugin-Ecliptic-*' ],
-    create_makefile_pl  => 'traditional',
+    create_makefile_pl  => 'passthrough',
     meta_merge     => {
         resources => {
             homepage   => 'http://padre.perlide.org/',

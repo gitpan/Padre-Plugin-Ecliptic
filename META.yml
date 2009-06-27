@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-Ecliptic
-version: 0.12
+version: 0.13
 author:
   - Ahmad M. Zawawi
 abstract: Padre plugin that provides Eclipse-like useful features
@@ -15,35 +15,35 @@ requires:
   File::Which: 0.05
   Padre: 0.33
 build_requires:
+  Locale::Msgfmt: 0.08
   Test::Exception: 0.27
   Test::More: 0.86
-  Test::NeedsDisplay: 1.05
   Test::NoWarnings: 0.084
 provides:
   Padre::Plugin::Ecliptic:
     file: lib/Padre/Plugin/Ecliptic.pm
-    version: 0.12
+    version: 0.13
   Padre::Plugin::Ecliptic::OpenInExplorerAction:
     file: lib/Padre/Plugin/Ecliptic/OpenInExplorerAction.pm
-    version: 0.12
+    version: 0.13
   Padre::Plugin::Ecliptic::OpenResourceDialog:
     file: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm
-    version: 0.12
+    version: 0.13
   Padre::Plugin::Ecliptic::QuickAssistDialog:
     file: lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm
-    version: 0.12
+    version: 0.13
   Padre::Plugin::Ecliptic::QuickFixDialog:
     file: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm
-    version: 0.12
+    version: 0.13
   Padre::Plugin::Ecliptic::QuickMenuAccessDialog:
     file: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm
-    version: 0.12
+    version: 0.13
   Padre::Plugin::Ecliptic::QuickModuleAccessDialog:
     file: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm
-    version: 0.12
+    version: 0.13
   Padre::Plugin::Ecliptic::QuickOutlineAccessDialog:
     file: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm
-    version: 0.12
+    version: 0.13
 generated_by: Module::Build version 0.280801
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
