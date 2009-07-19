@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 our @EXPORT_OK = ();
 
 # module imports
@@ -52,6 +52,26 @@ sub plugin_icon {
 
     # create and return icon
     return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+}
+
+#
+# Called when the plugin is enabled
+#
+sub plugin_enable {
+	my $self = shift;
+
+	# Read the plugin configuration, and create it if it is not there
+	my $config = $self->config_read;
+	if(not $config) {
+		# no configuration, let us write some defaults
+		$config = {};
+	}
+	if(not defined $config->{recently_opened}) {
+		$config->{recently_opened} = '';
+	}
+
+	# and write the plugin's configuration
+	$self->config_write($config);
 }
 
 #

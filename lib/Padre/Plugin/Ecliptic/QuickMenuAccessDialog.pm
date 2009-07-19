@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 our @EXPORT_OK = ();
 
 # module imports
@@ -91,9 +91,6 @@ sub _create {
 
 	# center the dialog
 	$self->Centre;
-
-	# focus on the search text box
-	$self->_search_text->SetFocus;
 }
 
 #
@@ -180,7 +177,18 @@ sub _setup_events {
 		$self->_on_ok_button_clicked();
 		$self->EndModal(0);
 	});
-	
+
+	Wx::Event::EVT_IDLE( $self, sub {
+		# update matches list
+		$self->_update_matches_list_box;
+		
+		# focus on the search text box
+		$self->_search_text->SetFocus;
+		
+		# unregister from idle event
+		Wx::Event::EVT_IDLE( $self, undef );
+	});
+
 }
 
 #

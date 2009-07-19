@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 our @EXPORT_OK = ();
 
 # module imports
@@ -15,6 +15,7 @@ use base 'Wx::Dialog';
 
 # accessors
 use Class::XSAccessor accessors => {
+	_plugin            => '_plugin',             # plugin instance
 	_sizer             => '_sizer',              # window sizer
 	_search_text       => '_search_text',	     # search text control
 	_matches_list      => '_matches_list',	     # matches list
@@ -53,6 +54,7 @@ sub new {
 
 	$self->SetIcon( Wx::GetWxPerlIcon() );
 	$self->_directory($directory);
+	$self->_plugin($plugin);
 
 	# create dialog
 	$self->_create;
@@ -75,6 +77,23 @@ sub _on_ok_button_clicked {
 	my @selections = $self->_matches_list->GetSelections();
 	foreach my $selection (@selections) {
 		my $filename = $self->_matches_list->GetClientData($selection);
+
+		# Keep the last 20 recently opened resources available
+		# and save it to plugin's configuration object
+		my $config = $self->_plugin->config_read;
+		my @recently_opened = split /\|/, $config->{recently_opened};
+		if(scalar @recently_opened >= 20) {
+			shift @recently_opened;
+		}
+		push @recently_opened, $filename;
+		my %unique = map { $_, 1 } @recently_opened;
+		@recently_opened = keys %unique;
+		@recently_opened = sort { 
+				File::Basename::fileparse($a) cmp File::Basename::fileparse($b)
+		} @recently_opened;
+		$config->{recently_opened} = join '|', @recently_opened;
+		$self->_plugin->config_write($config);
+
 		# try to open the file now
 		$main->setup_editor($filename);
 	}
@@ -134,7 +153,7 @@ sub _create_controls {
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# ignore .svn/.git checkbox
-	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, Wx::gettext('Ignore CVS/.svn/.git folders')) );
+	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, Wx::gettext('Ignore CVS/.svn/.git/blib folders')) );
 	$self->_ignore_dir_check->SetValue(1);
 	
 	# matches result list
@@ -175,7 +194,7 @@ sub _setup_events {
 			$self->_matches_list->SetFocus();
 		}
 
-		$event->Skip(1);		
+		$event->Skip(1);
 	});
 
 	Wx::Event::EVT_CHECKBOX( $self, $self->_ignore_dir_check, sub {
@@ -213,6 +232,29 @@ sub _setup_events {
 		$self->_on_ok_button_clicked();
 		$self->EndModal(0);
 	});
+
+	Wx::Event::EVT_IDLE( $self, sub {
+		$self->_show_recently_opened_resources;
+		
+		# focus on the search text box
+		$self->_search_text->SetFocus;
+		
+		# unregister from idle event
+		Wx::Event::EVT_IDLE( $self, undef );
+	});
+}
+
+#
+# Shows the recently opened resources
+#
+sub _show_recently_opened_resources() {
+	my $self = shift;
+	
+	my $config = $self->_plugin->config_read;
+	my @recently_opened = split /\|/, $config->{recently_opened};
+	$self->_matched_files( \@recently_opened );
+	$self->_update_matches_list_box;
+	$self->_matched_files( undef );
 }
 
 #
@@ -231,7 +273,7 @@ sub _search() {
 	if($ignore_dir) {
 		$rule->or( $rule->new
 						->directory
-						->name('CVS', '.svn', '.git')
+						->name('CVS', '.svn', '.git', 'blib')
 						->prune
 						->discard,
 					$rule->new);
