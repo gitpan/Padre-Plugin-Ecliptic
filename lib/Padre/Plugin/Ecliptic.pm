@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.15';
+our $VERSION   = '0.16';
 our @EXPORT_OK = ();
 
 # module imports
@@ -13,13 +13,20 @@ use Padre::Wx ();
 # is a subclass of Padre::Plugin
 use base 'Padre::Plugin';
 
+use Class::XSAccessor accessors => {
+	_open_resource_dialog => '_open_resource_dialog', # Open Resource Dialog
+};
 
 #
 # private subroutine to return the current share directory location
 #
 sub _sharedir {
-	return Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),
-		'Ecliptic/share'));
+	return Cwd::realpath(
+		File::Spec->join(
+			File::Basename::dirname(__FILE__),
+			'Ecliptic/share'
+		)
+	);
 }
 
 #
@@ -40,18 +47,31 @@ sub plugin_locale_directory {
 # This plugin is compatible with the following Padre plugin interfaces version
 #
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.26,
+	return 'Padre::Plugin' => 0.42,;
 }
 
 #
-# plugin icon
+# plugin's real icon...
+#
+sub logo_icon {
+	my ($self) = @_;
+
+	my $icon = Wx::Icon->new;
+	$icon->CopyFromBitmap( $self->plugin_icon );
+
+	return $icon;
+}
+
+#
+# plugin's bitmap not icon
 #
 sub plugin_icon {
-    # find resource path
-    my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'ecliptic.png');
 
-    # create and return icon
-    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+	# find resource path
+	my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'ecliptic.png' );
+
+	# create and return icon
+	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 }
 
 #
@@ -62,12 +82,16 @@ sub plugin_enable {
 
 	# Read the plugin configuration, and create it if it is not there
 	my $config = $self->config_read;
-	if(not $config) {
+	if ( not $config ) {
+
 		# no configuration, let us write some defaults
 		$config = {};
 	}
-	if(not defined $config->{recently_opened}) {
+	if ( not defined $config->{recently_opened} ) {
 		$config->{recently_opened} = '';
+	}
+	if ( not defined $config->{quick_menu_history} ) {
+		$config->{quick_menu_history} = '';
 	}
 
 	# and write the plugin's configuration
@@ -97,14 +121,14 @@ sub menu_plugins {
 		$self->{menu}->Append( -1, Wx::gettext("Quick Assist\tCtrl-Shift-L"), ),
 		sub { $self->_show_quick_assist_dialog(); },
 	);
-	
+
 	# Shows the "Quick Menu Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
 		$self->{menu}->Append( -1, Wx::gettext("Quick Menu Access\tCtrl-3"), ),
 		sub { $self->_show_quick_menu_access_dialog(); },
 	);
-	
+
 	# Shows the "Quick Outline Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
@@ -119,20 +143,20 @@ sub menu_plugins {
 		sub { $self->_show_quick_module_access_dialog(); },
 	);
 
-	# "Open in Explorer" action
+	# "Open in File Browser" action
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Open in Explorer\tCtrl-6"), ),
-		sub { $self->_open_in_explorer(); },
+		$self->{menu}->Append( -1, Wx::gettext("Open in File Browser\tCtrl-6"), ),
+		sub { $self->_open_in_file_browser(); },
 	);
-	
+
 	# Shows the "Quick Fix" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
 		$self->{menu}->Append( -1, Wx::gettext("Quick Fix\tCtrl-Shift-1"), ),
 		sub { $self->_show_quick_fix_dialog },
 	);
-	
+
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -155,12 +179,10 @@ sub _show_about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Ecliptic");
-	$about->SetDescription(
-		Wx::gettext("Provides Eclipse-like useful features to Padre.\n")
-	);
+	$about->SetDescription( Wx::gettext("Provides Eclipse-like useful features to Padre.\n") );
 	$about->SetVersion($VERSION);
-	Wx::AboutBox( $about );
-	
+	Wx::AboutBox($about);
+
 	return;
 }
 
@@ -171,9 +193,13 @@ sub _show_open_resource_dialog {
 	my $self = shift;
 
 	#Create and show the dialog
-	require Padre::Plugin::Ecliptic::OpenResourceDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::OpenResourceDialog->new($self);
-	$dialog->ShowModal();
+	if ( $self->_open_resource_dialog && $self->_open_resource_dialog->IsShown ) {
+		$self->_open_resource_dialog->SetFocus;
+	} else {
+		require Padre::Plugin::Ecliptic::OpenResourceDialog;
+		$self->_open_resource_dialog( Padre::Plugin::Ecliptic::OpenResourceDialog->new($self) );
+		$self->_open_resource_dialog->Show(1);
+	}
 
 	return;
 }
@@ -186,7 +212,7 @@ sub _show_quick_assist_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickAssistDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickAssistDialog->new($self);
+	my $dialog = Padre::Plugin::Ecliptic::QuickAssistDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -200,7 +226,7 @@ sub _show_quick_menu_access_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickMenuAccessDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickMenuAccessDialog->new($self);
+	my $dialog = Padre::Plugin::Ecliptic::QuickMenuAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -214,7 +240,7 @@ sub _show_quick_outline_access_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickOutlineAccessDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickOutlineAccessDialog->new($self);
+	my $dialog = Padre::Plugin::Ecliptic::QuickOutlineAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -228,7 +254,7 @@ sub _show_quick_module_access_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickModuleAccessDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickModuleAccessDialog->new($self);
+	my $dialog = Padre::Plugin::Ecliptic::QuickModuleAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -239,14 +265,14 @@ sub _show_quick_module_access_dialog {
 # On win32, selects it in Windows Explorer
 # On linux, opens the containing folder for it
 #
-sub _open_in_explorer {
+sub _open_in_file_browser {
 	my $self = shift;
 
-	#Open the current document in file manager/explorer
-	use Padre::Plugin::Ecliptic::OpenInExplorerAction;
-	my $action = Padre::Plugin::Ecliptic::OpenInExplorerAction->new($self);
-	$action->open_in_explorer;
-	
+	#Open the current document in file browser
+	use Padre::Plugin::Ecliptic::OpenInFileBrowserAction;
+	my $action = Padre::Plugin::Ecliptic::OpenInFileBrowserAction->new($self);
+	$action->open_in_file_browser;
+
 	return;
 }
 
@@ -258,8 +284,8 @@ sub _show_quick_fix_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickFixDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickFixDialog->new($self);
-	if($dialog) {
+	my $dialog = Padre::Plugin::Ecliptic::QuickFixDialog->new($self);
+	if ($dialog) {
 		$dialog->Show(1);
 	}
 
@@ -316,11 +342,11 @@ button, the outline element in the outline tree will be selected.
 This opens a dialog where you can search for a CPAN module. When you hit the OK 
 button, the selected module will be displayed in Padre's POD browser.
 
-=head2 Open in Explorer (Shortcut: Ctrl + 6)
+=head2 Open in File Browser (Shortcut: Ctrl + 6)
 
-For the current saved Padre document, open the platform's file manager and 
+For the current saved Padre document, open the platform's file manager/browser and 
 tries to select it if possible. On win32, opens the containing folder and 
-selects the file in explorer. On *inux KDE/GNOME, opens the containing folder 
+selects the file in its explorer. On *inux KDE/GNOME, opens the containing folder 
 for it.
 
 =head2 Quick Fix (Shortcut: Ctrl + Shift + 1)
@@ -363,13 +389,11 @@ Sun takes. And i love it!
 
 =head1 AUTHOR
 
-Ahmad M. Zawawi, C<< <ahmad.zawawi at gmail.com> >>
+Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2009 Ahmad M. Zawawi, C<< <ahmad.zawawi at gmail.com> >>
-
-=head1 LICENSE
+Copyright 2009 C<< <ahmad.zawawi at gmail.com> >>
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.

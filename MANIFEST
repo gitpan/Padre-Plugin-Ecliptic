@@ -1,8 +1,9 @@
 Build.PL
 Changes
 lib/Padre/Plugin/Ecliptic.pm
-lib/Padre/Plugin/Ecliptic/OpenInExplorerAction.pm
+lib/Padre/Plugin/Ecliptic/OpenInFileBrowserAction.pm
 lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm
+lib/Padre/Plugin/Ecliptic/OpenResourceSearchTask.pm
 lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm
 lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm
 lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm
@@ -11,6 +12,7 @@ lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm
 lib/Padre/Plugin/Ecliptic/share/icons/ecliptic.png
 lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-ar.po
 lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-fr-fr.po
+lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-ja.po
 lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-nl-nl.po
 lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-pl.po
 lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-pt-br.po
