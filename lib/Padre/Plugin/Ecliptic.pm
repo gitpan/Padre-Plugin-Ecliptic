@@ -4,30 +4,13 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION   = '0.16';
-our @EXPORT_OK = ();
+our $VERSION   = '0.17';
 
 # module imports
 use Padre::Wx ();
 
 # is a subclass of Padre::Plugin
 use base 'Padre::Plugin';
-
-use Class::XSAccessor accessors => {
-	_open_resource_dialog => '_open_resource_dialog', # Open Resource Dialog
-};
-
-#
-# private subroutine to return the current share directory location
-#
-sub _sharedir {
-	return Cwd::realpath(
-		File::Spec->join(
-			File::Basename::dirname(__FILE__),
-			'Ecliptic/share'
-		)
-	);
-}
 
 #
 # Returns the plugin name to Padre
@@ -37,17 +20,10 @@ sub plugin_name {
 }
 
 #
-# Directory where to find the translations
-#
-sub plugin_locale_directory {
-	return File::Spec->catdir( _sharedir(), 'locale' );
-}
-
-#
 # This plugin is compatible with the following Padre plugin interfaces version
 #
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.42,;
+	return 'Padre::Plugin' => 0.43;
 }
 
 #
@@ -66,9 +42,9 @@ sub logo_icon {
 # plugin's bitmap not icon
 #
 sub plugin_icon {
-
+	my $self = shift;
 	# find resource path
-	my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'ecliptic.png' );
+	my $iconpath = File::Spec->catfile( $self->plugin_directory_share, 'icons', 'ecliptic.png' );
 
 	# create and return icon
 	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
@@ -86,9 +62,6 @@ sub plugin_enable {
 
 		# no configuration, let us write some defaults
 		$config = {};
-	}
-	if ( not defined $config->{recently_opened} ) {
-		$config->{recently_opened} = '';
 	}
 	if ( not defined $config->{quick_menu_history} ) {
 		$config->{quick_menu_history} = '';
@@ -108,25 +81,11 @@ sub menu_plugins {
 	# Create a menu
 	$self->{menu} = Wx::Menu->new;
 
-	# Shows the "Open Resource" dialog
-	Wx::Event::EVT_MENU(
-		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Open Resource\tCtrl-Shift-R"), ),
-		sub { $self->_show_open_resource_dialog(); },
-	);
-
 	# Shows the "Quick Assist" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
 		$self->{menu}->Append( -1, Wx::gettext("Quick Assist\tCtrl-Shift-L"), ),
 		sub { $self->_show_quick_assist_dialog(); },
-	);
-
-	# Shows the "Quick Menu Access" dialog
-	Wx::Event::EVT_MENU(
-		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Quick Menu Access\tCtrl-3"), ),
-		sub { $self->_show_quick_menu_access_dialog(); },
 	);
 
 	# Shows the "Quick Outline Access" dialog
@@ -141,13 +100,6 @@ sub menu_plugins {
 		$main_window,
 		$self->{menu}->Append( -1, Wx::gettext("Quick Module Access\tCtrl-5"), ),
 		sub { $self->_show_quick_module_access_dialog(); },
-	);
-
-	# "Open in File Browser" action
-	Wx::Event::EVT_MENU(
-		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Open in File Browser\tCtrl-6"), ),
-		sub { $self->_open_in_file_browser(); },
 	);
 
 	# Shows the "Quick Fix" dialog
@@ -187,24 +139,6 @@ sub _show_about {
 }
 
 #
-# Opens the "Open Resource" dialog
-#
-sub _show_open_resource_dialog {
-	my $self = shift;
-
-	#Create and show the dialog
-	if ( $self->_open_resource_dialog && $self->_open_resource_dialog->IsShown ) {
-		$self->_open_resource_dialog->SetFocus;
-	} else {
-		require Padre::Plugin::Ecliptic::OpenResourceDialog;
-		$self->_open_resource_dialog( Padre::Plugin::Ecliptic::OpenResourceDialog->new($self) );
-		$self->_open_resource_dialog->Show(1);
-	}
-
-	return;
-}
-
-#
 # Opens the "Quick Assist" dialog
 #
 sub _show_quick_assist_dialog {
@@ -213,20 +147,6 @@ sub _show_quick_assist_dialog {
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickAssistDialog;
 	my $dialog = Padre::Plugin::Ecliptic::QuickAssistDialog->new($self);
-	$dialog->ShowModal();
-
-	return;
-}
-
-#
-# Opens the "Quick Menu Access" dialog
-#
-sub _show_quick_menu_access_dialog {
-	my $self = shift;
-
-	#Create and show the dialog
-	require Padre::Plugin::Ecliptic::QuickMenuAccessDialog;
-	my $dialog = Padre::Plugin::Ecliptic::QuickMenuAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -256,22 +176,6 @@ sub _show_quick_module_access_dialog {
 	require Padre::Plugin::Ecliptic::QuickModuleAccessDialog;
 	my $dialog = Padre::Plugin::Ecliptic::QuickModuleAccessDialog->new($self);
 	$dialog->ShowModal();
-
-	return;
-}
-
-#
-# For the current "saved" Padre document,
-# On win32, selects it in Windows Explorer
-# On linux, opens the containing folder for it
-#
-sub _open_in_file_browser {
-	my $self = shift;
-
-	#Open the current document in file browser
-	use Padre::Plugin::Ecliptic::OpenInFileBrowserAction;
-	my $action = Padre::Plugin::Ecliptic::OpenInFileBrowserAction->new($self);
-	$action->open_in_file_browser;
 
 	return;
 }
@@ -311,26 +215,10 @@ Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful feature
 Once you enable this Plugin under Padre, you'll get a brand new menu with the 
 following options:
 
-=head2 Open Resource (Shortcut: Ctrl + Shift + R)
-
-This opens a nice dialog that allows you to find any file that exists 
-in the current document or working directory. You can use ? to replace 
-a single character or * to replace an entire string. The matched files list 
-are sorted alphabetically and you can select one or more files to be opened in 
-Padre when you press the OK button.
-
-You can simply ignore CVS, .svn and .git folders using a simple checkbox 
-(enhancement over Eclipse).
-
 =head2 Quick Assist (Shortcut: Ctrl + Shift + L)
 
 This opens a dialog with a list of current Padre actions/shortcuts. When 
 you hit the OK button, the selected Padre action will be performed.
-
-=head2 Quick Menu Access (Shortcut: Ctrl + 3)
-
-This opens a dialog where you can search for menu labels. When you hit the OK 
-button, the menu item will be selected.
 
 =head2 Quick Outline Access (Shortcut: Ctrl + 4)
 
@@ -341,13 +229,6 @@ button, the outline element in the outline tree will be selected.
 
 This opens a dialog where you can search for a CPAN module. When you hit the OK 
 button, the selected module will be displayed in Padre's POD browser.
-
-=head2 Open in File Browser (Shortcut: Ctrl + 6)
-
-For the current saved Padre document, open the platform's file manager/browser and 
-tries to select it if possible. On win32, opens the containing folder and 
-selects the file in its explorer. On *inux KDE/GNOME, opens the containing folder 
-for it.
 
 =head2 Quick Fix (Shortcut: Ctrl + Shift + 1)
 

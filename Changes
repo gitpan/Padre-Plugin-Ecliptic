@@ -1,5 +1,20 @@
 Changes
 
+=head1 0.17  2009.8.17
+
+	Depends on Padre 0.43 in Build.PL
+	Moved the following to Padre 0.43 core:
+		Open resource dialog
+		Quick menu access dialog
+		Open in file browser action (integrated with directory browser)
+	remove private _sharedir and use the one provided by the parent class (szabgab)
+	Reuse Padre::Wx::Main help method (szabgab)
+	Renamed to the new Padre 0.43 PO naming scheme
+	POD fixes.
+	Updated translations:
+		German translation (Sewi++)
+		French translation (jquelin++)
+
 =head1 0.16  2009.8.2
 
 	Updated translations:
