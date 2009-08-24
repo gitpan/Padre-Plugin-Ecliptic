@@ -2,7 +2,6 @@ Build.PL
 Changes
 lib/Padre/Plugin/Ecliptic.pm
 lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm
-lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm
 lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm
 lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm
 lib/Padre/Plugin/Ecliptic/share/icons/ecliptic.png

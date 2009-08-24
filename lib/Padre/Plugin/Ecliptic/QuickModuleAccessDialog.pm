@@ -4,8 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION   = '0.17';
-our @EXPORT_OK = ();
+our $VERSION   = '0.18';
 
 # module imports
 use Padre::Wx ();
@@ -65,8 +64,9 @@ sub _on_ok_button_clicked {
 		Wx::Event::EVT_IDLE(
 			$self,
 			sub {
+
 				#print "Show DocBrowser for '$selected_module'\n";
-				Padre->ide->wx->main->help( $selected_module );
+				Padre->ide->wx->main->help($selected_module);
 				Wx::Event::EVT_IDLE( $self, undef );
 			},
 		);
