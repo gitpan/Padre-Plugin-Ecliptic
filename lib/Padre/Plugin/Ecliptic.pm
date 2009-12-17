@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 # module imports
 use Padre::Wx ();
@@ -31,9 +31,7 @@ sub padre_interfaces {
 # We will keep this until Module::Build get its own sharedir installation feature
 #
 sub _sharedir {
-	return Cwd::realpath( 
-		File::Spec->join( 
-			File::Basename::dirname(__FILE__), 'Ecliptic' , 'share' ) );
+	return Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'Ecliptic', 'share' ) );
 }
 
 #

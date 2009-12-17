@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION   = '0.18';
+our $VERSION = '0.19';
 
 # module imports
 use Padre::Wx ();
@@ -243,8 +243,16 @@ sub _update_matches_list_box {
 
 	unless ( $self->_modules ) {
 		$self->_status_text->SetLabel( Wx::gettext("Reading modules. Please wait...") );
-		require ExtUtils::Installed;
-		my @modules = ExtUtils::Installed->new()->modules();
+		my %seen;
+		for my $path (@INC) {
+			for my $file ( File::Find::Rule->name('*.pm')->in($path) ) {
+				my $module = substr( $file, length($path) + 1 );
+				$module =~ s/.pm$//;
+				$module =~ s{[\\/]}{::}g;
+				$seen{$module}++;
+			}
+		}
+		my @modules = sort keys %seen;
 		$self->_modules( \@modules );
 		$self->_status_text->SetLabel( Wx::gettext("Finished Searching") );
 	}

@@ -7,6 +7,7 @@ lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm
 lib/Padre/Plugin/Ecliptic/share/icons/ecliptic.png
 lib/Padre/Plugin/Ecliptic/share/locale/Padre__Plugin__Ecliptic-ar.po
 lib/Padre/Plugin/Ecliptic/share/locale/Padre__Plugin__Ecliptic-de.po
+lib/Padre/Plugin/Ecliptic/share/locale/Padre__Plugin__Ecliptic-es-es.po
 lib/Padre/Plugin/Ecliptic/share/locale/Padre__Plugin__Ecliptic-fr-fr.po
 lib/Padre/Plugin/Ecliptic/share/locale/Padre__Plugin__Ecliptic-ja.po
 lib/Padre/Plugin/Ecliptic/share/locale/Padre__Plugin__Ecliptic-nl-nl.po
