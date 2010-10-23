@@ -1,14 +1,13 @@
-Padre-Plugin-Ecliptic
-======================
 
-Padre plugin for providing useful Eclipse features. For more information, please refer to 
-perldoc Padre::Plugin::Ecliptic.
 
-INSTALLATION
+This archive contains the distribution Padre-Plugin-Ecliptic,
+version 0.20:
 
-To install this module, type the following: 
+  Padre plugin that provides Eclipse-like useful features
 
-	perl Build.PL
-	./Build
-	./Build test
-	./Build install
+This software is copyright (c) 2010 by Ahmad M. Zawawi.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+

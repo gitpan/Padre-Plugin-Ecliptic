@@ -1,37 +1,168 @@
 ---
-name: Padre-Plugin-Ecliptic
-version: 0.19
+abstract: 'Padre plugin that provides Eclipse-like useful features'
 author:
-  - Ahmad M. Zawawi
-abstract: Padre plugin that provides Eclipse-like useful features
+  - 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>'
+build_requires:
+  Locale::Msgfmt: 0.14
+  Module::Build: 0.3601
+  Test::More: 0
+configure_requires:
+  Module::Build: 0.3601
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.102342, CPAN::Meta::Converter version 2.102400'
 license: perl
-resources:
-  homepage: http://padre.perlide.org/
-  license: http://dev.perl.org/licenses/
-  repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-Ecliptic/
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Padre-Plugin-Ecliptic
 requires:
   Class::XSAccessor: 1.02
   File::Which: 0.05
-  Padre: 0.43
-build_requires:
-  Locale::Msgfmt: 0.14
-  Test::Exception: 0.27
-  Test::More: 0.86
-  Test::NoWarnings: 0.084
-provides:
-  Padre::Plugin::Ecliptic:
-    file: lib/Padre/Plugin/Ecliptic.pm
-    version: 0.19
-  Padre::Plugin::Ecliptic::QuickAssistDialog:
-    file: lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm
-    version: 0.19
-  Padre::Plugin::Ecliptic::QuickModuleAccessDialog:
-    file: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm
-    version: 0.19
-  Padre::Plugin::Ecliptic::QuickOutlineAccessDialog:
-    file: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm
-    version: 0.19
-generated_by: Module::Build version 0.280801
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  Padre: 0.72
+resources:
+  homepage: http://padre.perlide.org
+  repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-Ecliptic/
+version: 0.20
+x_Dist_Zilla:
+  plugins:
+    -
+      class: Dist::Zilla::Plugin::GatherDir
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/GatherDir
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::PruneCruft
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/PruneCruft
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::ManifestSkip
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/ManifestSkip
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::MetaYAML
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/MetaYAML
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::License
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/License
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::Readme
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/Readme
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::ExtraTests
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/ExtraTests
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::ExecDir
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/ExecDir
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::ShareDir
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/ShareDir
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::Manifest
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/Manifest
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::TestRelease
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/TestRelease
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::ConfirmRelease
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/ConfirmRelease
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::UploadToCPAN
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Basic/UploadToCPAN
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::CheckChangeLog
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::CheckChangeLog
+      version: 0.01
+    -
+      class: Dist::Zilla::Plugin::CheckChangesTests
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::CheckChangesTests
+      version: 1.100900
+    -
+      class: Dist::Zilla::Plugin::CompileTests
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::CompileTests
+      version: 1.101800
+    -
+      class: Dist::Zilla::Plugin::EOLTests
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::EOLTests
+      version: 0.02
+    -
+      class: Dist::Zilla::Plugin::PodWeaver
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::PodWeaver
+      version: 3.101641
+    -
+      class: Dist::Zilla::Plugin::PkgVersion
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::PkgVersion
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::MetaResources
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::MetaResources
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::MetaConfig
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::MetaConfig
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::MetaJSON
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::MetaJSON
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::NextRelease
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::NextRelease
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::PodSyntaxTests
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::PodSyntaxTests
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::ModuleBuild
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::ModuleBuild
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::LocaleMsgfmt
+      name: Dist::Zilla::PluginBundle::PadrePlugin/Dist::Zilla::Plugin::LocaleMsgfmt
+      version: 1.100970
+    -
+      class: Dist::Zilla::Plugin::Prereqs
+      config:
+        Dist::Zilla::Plugin::Prereqs:
+          phase: test
+          type: requires
+      name: TestRequires
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::Prereqs
+      config:
+        Dist::Zilla::Plugin::Prereqs:
+          phase: runtime
+          type: requires
+      name: Prereqs
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::FinderCode
+      name: ':InstallModules'
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::FinderCode
+      name: ':TestFiles'
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::FinderCode
+      name: ':ExecFiles'
+      version: 4.102342
+    -
+      class: Dist::Zilla::Plugin::FinderCode
+      name: ':ShareFiles'
+      version: 4.102342
+  zilla:
+    class: Dist::Zilla::Dist::Builder
+    config:
+      is_trial: 0
+    version: 4.102342

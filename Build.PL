@@ -1,43 +1,41 @@
+
 use strict;
 use warnings;
-use Module::Build;
 
-my $class = Module::Build->subclass( code => <<'EOF');
-	eval { require Locale::Msgfmt; Locale::Msgfmt->import(); };
-	sub process_mo_files {
-		die("requires Locale::Msgfmt") if(! $INC{'Locale/Msgfmt.pm'});
-		msgfmt({
-			in => "lib/Padre/Plugin/Ecliptic/share/locale/",
-			out => "blib/lib/Padre/Plugin/Ecliptic/share/locale/"});
-	}
-EOF
-my $builder = $class->new(
-	module_name       => 'Padre::Plugin::Ecliptic',
-	license           => 'perl',
-	dist_author       => 'Ahmad M. Zawawi',
-	dist_version_from => 'lib/Padre/Plugin/Ecliptic.pm',
-	build_requires    => {
-		'Test::More'       => '0.86',
-		'Test::Exception'  => '0.27',
-		'Test::NoWarnings' => '0.084',
-		'Locale::Msgfmt'   => '0.14',
-	},
-	requires => {
-		'Padre'             => '0.43',
-		'Class::XSAccessor' => '1.02',
-		'File::Which'       => '0.05',
-	},
-	add_to_cleanup     => ['Padre-Plugin-Ecliptic-*'],
-	create_makefile_pl => 'passthrough',
-	meta_merge         => {
-		resources => {
-			homepage => 'http://padre.perlide.org/',
-			repository =>
-				'http://svn.perlide.org/padre/trunk/Padre-Plugin-Ecliptic/',
-		}
-	},
+use Module::Build 0.3601;
+
+
+my %module_build_args = (
+  'build_requires' => {
+    'Locale::Msgfmt' => '0.14',
+    'Module::Build' => '0.3601',
+    'Test::More' => '0'
+  },
+  'configure_requires' => {
+    'Module::Build' => '0.3601'
+  },
+  'dist_abstract' => 'Padre plugin that provides Eclipse-like useful features',
+  'dist_author' => [
+    'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>'
+  ],
+  'dist_name' => 'Padre-Plugin-Ecliptic',
+  'dist_version' => '0.20',
+  'license' => 'perl',
+  'module_name' => 'Padre::Plugin::Ecliptic',
+  'recommends' => {},
+  'recursive_test_files' => 1,
+  'requires' => {
+    'Class::XSAccessor' => '1.02',
+    'File::Which' => '0.05',
+    'Padre' => '0.72'
+  },
+  'script_files' => [],
+  'share_dir' => {
+    'dist' => 'share'
+  }
 );
 
-$builder->add_build_element('mo');
-$builder->add_build_element('png');
-$builder->create_build_script();
+
+my $build = Module::Build->new(%module_build_args);
+
+$build->create_build_script;

@@ -1,10 +1,12 @@
 package Padre::Plugin::Ecliptic;
+BEGIN {
+  $Padre::Plugin::Ecliptic::VERSION = '0.20';
+}
+
+# ABSTRACT: Padre plugin that provides Eclipse-like useful features
 
 use strict;
 use warnings;
-
-# package exports and version
-our $VERSION = '0.19';
 
 # module imports
 use Padre::Wx ();
@@ -23,15 +25,14 @@ sub plugin_name {
 # This plugin is compatible with the following Padre plugin interfaces version
 #
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.43;
+	return 'Padre::Plugin' => 0.47;
 }
 
 #
-# private subroutine to return the current share directory location
-# We will keep this until Module::Build get its own sharedir installation feature
+# Returns the current share directory location
 #
 sub _sharedir {
-	return Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'Ecliptic', 'share' ) );
+	return Padre::Util::share('Ecliptic');
 }
 
 #
@@ -134,7 +135,7 @@ sub _show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Ecliptic");
 	$about->SetDescription( Wx::gettext("Provides Eclipse-like useful features to Padre.\n") );
-	$about->SetVersion($VERSION);
+	$about->SetVersion($Padre::Plugin::Ecliptic::VERSION);
 	Wx::AboutBox($about);
 
 	return;
@@ -184,11 +185,17 @@ sub _show_quick_module_access_dialog {
 
 1;
 
-__END__
+
+
+=pod
 
 =head1 NAME
 
 Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful features
+
+=head1 VERSION
+
+version 0.20
 
 =head1 SYNOPSIS
 
@@ -198,22 +205,22 @@ Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful feature
 
 =head1 DESCRIPTION
 
-Once you enable this Plugin under Padre, you'll get a brand new menu with the 
+Once you enable this Plugin under Padre, you'll get a brand new menu with the
 following options:
 
 =head2 Quick Assist (Shortcut: Ctrl + Shift + L)
 
-This opens a dialog with a list of current Padre actions/shortcuts. When 
+This opens a dialog with a list of current Padre actions/shortcuts. When
 you hit the OK button, the selected Padre action will be performed.
 
 =head2 Quick Outline Access (Shortcut: Ctrl + 4)
 
-This opens a dialog where you can search for outline tree. When you hit the OK 
+This opens a dialog where you can search for outline tree. When you hit the OK
 button, the outline element in the outline tree will be selected.
 
 =head2 Quick Module Access (Shortcut: Ctrl + 5)
 
-This opens a dialog where you can search for a CPAN module. When you hit the OK 
+This opens a dialog where you can search for a CPAN module. When you hit the OK
 button, the selected module will be displayed in Padre's POD browser.
 
 =head2 About
@@ -222,17 +229,23 @@ Shows a classic about dialog with this module's name and version.
 
 =head1 Why the name Ecliptic?
 
-I wanted a simple plugin name for including Eclipse-related killer features into 
-Padre. So i came up with Ecliptic and it turned out to be the orbit which the 
+I wanted a simple plugin name for including Eclipse-related killer features into
+Padre. So i came up with Ecliptic and it turned out to be the orbit which the
 Sun takes. And i love it!
 
 =head1 AUTHOR
 
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
+Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2009 C<< <ahmad.zawawi at gmail.com> >>
+This software is copyright (c) 2010 by Ahmad M. Zawawi.
 
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
+
+__END__
+

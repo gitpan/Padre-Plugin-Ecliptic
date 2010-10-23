@@ -1,10 +1,12 @@
 package Padre::Plugin::Ecliptic::QuickOutlineAccessDialog;
+BEGIN {
+  $Padre::Plugin::Ecliptic::QuickOutlineAccessDialog::VERSION = '0.20';
+}
+
+# ABSTRACT: Quick outline autocomplete dialog
 
 use warnings;
 use strict;
-
-# package exports and version
-our $VERSION = '0.19';
 
 # module imports
 use Padre::Wx ();
@@ -282,14 +284,26 @@ sub _update_matches_list_box {
 1;
 
 __END__
+=pod
+
+=head1 NAME
+
+Padre::Plugin::Ecliptic::QuickOutlineAccessDialog - Quick outline autocomplete dialog
+
+=head1 VERSION
+
+version 0.20
 
 =head1 AUTHOR
 
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
+Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2009 C<< <ahmad.zawawi at gmail.com> >>
+This software is copyright (c) 2010 by Ahmad M. Zawawi.
 
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
