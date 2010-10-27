@@ -19,7 +19,7 @@ my %module_build_args = (
     'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>'
   ],
   'dist_name' => 'Padre-Plugin-Ecliptic',
-  'dist_version' => '0.20',
+  'dist_version' => '0.21',
   'license' => 'perl',
   'module_name' => 'Padre::Plugin::Ecliptic',
   'recommends' => {},

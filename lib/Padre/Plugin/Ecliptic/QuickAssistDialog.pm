@@ -1,6 +1,6 @@
 package Padre::Plugin::Ecliptic::QuickAssistDialog;
 BEGIN {
-  $Padre::Plugin::Ecliptic::QuickAssistDialog::VERSION = '0.20';
+  $Padre::Plugin::Ecliptic::QuickAssistDialog::VERSION = '0.21';
 }
 
 # ABSTRACT: Quick assist autocomplete dialog
@@ -240,7 +240,7 @@ Padre::Plugin::Ecliptic::QuickAssistDialog - Quick assist autocomplete dialog
 
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 AUTHOR
 

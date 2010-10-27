@@ -1,5 +1,8 @@
 Changes for Padre-Plugin-Ecliptic
 
+0.21   2010.10.27
+	t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
+
 0.20   2010.10.23
 	Switched to Dist::Zilla
 	Fixed Compatibility with the latest Padre

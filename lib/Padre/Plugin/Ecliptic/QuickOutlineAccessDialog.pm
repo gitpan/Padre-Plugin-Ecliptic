@@ -1,6 +1,6 @@
 package Padre::Plugin::Ecliptic::QuickOutlineAccessDialog;
 BEGIN {
-  $Padre::Plugin::Ecliptic::QuickOutlineAccessDialog::VERSION = '0.20';
+  $Padre::Plugin::Ecliptic::QuickOutlineAccessDialog::VERSION = '0.21';
 }
 
 # ABSTRACT: Quick outline autocomplete dialog
@@ -292,7 +292,7 @@ Padre::Plugin::Ecliptic::QuickOutlineAccessDialog - Quick outline autocomplete d
 
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 AUTHOR
 

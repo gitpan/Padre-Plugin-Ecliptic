@@ -1,6 +1,6 @@
 package Padre::Plugin::Ecliptic::QuickModuleAccessDialog;
 BEGIN {
-  $Padre::Plugin::Ecliptic::QuickModuleAccessDialog::VERSION = '0.20';
+  $Padre::Plugin::Ecliptic::QuickModuleAccessDialog::VERSION = '0.21';
 }
 
 # ABSTRACT: Quick module autocomplete dialog
@@ -287,7 +287,7 @@ Padre::Plugin::Ecliptic::QuickModuleAccessDialog - Quick module autocomplete dia
 
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 AUTHOR
 
