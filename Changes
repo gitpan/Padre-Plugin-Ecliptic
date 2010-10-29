@@ -1,5 +1,8 @@
 Changes for Padre-Plugin-Ecliptic
 
+0.22   2010.10.29
+	Removed Test::NeedsDisplay dependency (AZAWAWI)
+
 0.21   2010.10.27
 	t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
