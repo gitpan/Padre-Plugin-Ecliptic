@@ -1,6 +1,6 @@
 package Padre::Plugin::Ecliptic;
 BEGIN {
-  $Padre::Plugin::Ecliptic::VERSION = '0.22';
+  $Padre::Plugin::Ecliptic::VERSION = '0.23';
 }
 
 # ABSTRACT: Padre plugin that provides Eclipse-like useful features
@@ -195,7 +195,7 @@ Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful feature
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 

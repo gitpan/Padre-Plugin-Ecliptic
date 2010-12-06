@@ -7,7 +7,7 @@ use Module::Build 0.3601;
 
 my %module_build_args = (
   'build_requires' => {
-    'Locale::Msgfmt' => '0.14',
+    'Locale::Msgfmt' => '0.15',
     'Module::Build' => '0.3601',
     'Test::More' => '0'
   },
@@ -19,7 +19,7 @@ my %module_build_args = (
     'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>'
   ],
   'dist_name' => 'Padre-Plugin-Ecliptic',
-  'dist_version' => '0.22',
+  'dist_version' => '0.23',
   'license' => 'perl',
   'module_name' => 'Padre::Plugin::Ecliptic',
   'recommends' => {},
